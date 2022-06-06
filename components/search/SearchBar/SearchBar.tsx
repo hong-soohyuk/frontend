@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Styled } from './SearchBar.styled';
 import Typography from '@components/common/Typography';
+import { useRouter } from 'next/router';
+import { useSearchContext } from '../context';
 
 //prettier-ignore
 const fetchedData = [{ keyword: '대학생활' },{ keyword: '자기개발' },{ keyword: '토플' },{ keyword: '동아리' },{ keyword: '연합동아리' },{ keyword: '길잡이' },{ keyword: '개발공부' },
@@ -18,6 +20,9 @@ export interface InputProps {
 const SearchBar: React.FC<InputProps> = ({ onSearchClick, placeholder }) => {
   const [filteredData, setFilteredData] = useState<fetchedDataType[]>([]);
   const [keyword, setKeyword] = useState<string>('');
+
+  const searchState = useSearchContext();
+  const router = useRouter();
 
   const [focus, setFocus] = useState<boolean>(false);
 
@@ -48,6 +53,8 @@ const SearchBar: React.FC<InputProps> = ({ onSearchClick, placeholder }) => {
           height={'16px'}
           onClick={() => {
             onSearchClick(keyword);
+            router.push({ pathname: '/search/result', query: { searchKeyword: keyword } });
+            // onClick={() => router.push({ pathname: '/post/[postId]', query: { postId: post.postId } })}
           }}
         />
       </Styled.section>

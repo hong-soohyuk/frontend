@@ -46,7 +46,7 @@ export const post = {
     const { searchState, pageParam } = params;
     const { keyword, sort, region } = searchState;
     const sortValue = SortType[sort as keyof typeof SortType];
-    console.log('keyword, region', keyword, region);
+    console.log('keyword', keyword, ' region', region);
     const url = `/post/search?keyword=${encodeURIComponent(
       keyword,
     )}&page=${pageParam}&filter=${sortValue}&region=${encodeURIComponent(region)}`;
@@ -59,6 +59,10 @@ export const post = {
   },
   getLikePostList: async () => {
     const url = `post/likes`;
+    return await client.get(url);
+  },
+  getSearchHashtags: async () => {
+    const url = `/hashtag`;
     return await client.get(url);
   },
 };
