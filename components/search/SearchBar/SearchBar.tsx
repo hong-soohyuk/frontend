@@ -57,6 +57,7 @@ const SearchBar: React.FC<InputProps> = ({ onSearchClick, placeholder }) => {
             <Styled.li key={item.keyword}>
               <Styled.listText
                 onMouseDown={() => {
+                  setKeyword(item.keyword);
                   onSearchClick(item.keyword);
                 }}
               >
