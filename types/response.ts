@@ -9,6 +9,10 @@ export type ReservationCreateResponseDto = {
   reservationId: number;
 };
 
+export type HashtagResponseDto = {
+  name: string;
+};
+
 export type AuthSigninResponseDto = {
   nickname: string;
   imageUrl: string;
@@ -18,7 +22,7 @@ export type ReviewsResponseDto = {
 };
 
 export type ReservationListResponseDto = {
-  postId: number;
+  postId: number | string;
   imageUrl: string;
   title: string;
   hashtags: string[];
@@ -41,6 +45,7 @@ export type PostListResponseDto = {
   imageUrl: string;
   title: string;
   hashtags: string[];
+  content?: string;
 };
 
 export type PostDetailResponseDto = PostEntity & { isAuthor: boolean };

@@ -8,35 +8,46 @@ import { useFormik } from 'formik';
 import { Divider } from 'antd';
 import 'antd/dist/antd.css';
 import { UserProfileResponseDto } from 'types/response';
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import image from '@lib/api/image';
-import user from '@lib/api/user';
 import auth from '@lib/api/auth';
 import { ModifyUserProfileRequestDto } from 'types/request';
+import PasswordModal from '../PasswordModal';
+import { storage } from '@lib/storage';
+import { useProfileMutation } from '../useProfile';
 
 interface ModifyProps {
   profile: UserProfileResponseDto;
 }
 
 const Modify: React.FC<ModifyProps> = ({ profile }) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const { mutate: modify } = useProfileMutation();
+
   const modifyFormik = useFormik<ModifyUserProfileRequestDto>({
+    enableReinitialize: true,
     initialValues: {
       nickname: profile.nickname,
-      imageUrl: profile.imageUrl,
+      imageUrl: profile.imageUrl === '' ? '/imgs/default_profile.png' : profile.imageUrl,
       name: profile.name,
       address: profile.address,
       phone: profile.phone,
     },
     onSubmit: async values => {
-      const response = await user.modifyProfile(values);
-      if (response.status === 200) alert(response.message);
-      else alert('회원정보 수정에 실패하였습니다.');
+      modify(values, {
+        onSuccess: async (response: any) => {
+          if (response.status === 200) alert('회원정보 수정 완료되었습니다.');
+          else alert(response.message);
+        },
+      });
     },
   });
   const handleWithDrawal = async () => {
     const status = await auth.withDrawal();
-    if (status === 200) location.href = '/';
-    else alert('회원탈퇴에 실패하였습니다.');
+    if (status === 200) {
+      storage.clearToken();
+      location.href = '/';
+    } else alert('회원탈퇴에 실패하였습니다.');
   };
 
   const hiddenFileInput = useRef<HTMLInputElement>(null);
@@ -58,7 +69,7 @@ const Modify: React.FC<ModifyProps> = ({ profile }) => {
     이름: (<Input id="name" name={'name'} type={'text'} onChange={modifyFormik.handleChange} value={modifyFormik.values.name} placeholder={modifyFormik.initialValues.name}/>),
     닉네임: (<Input id="nickname" name={'nickname'} type={'text'} onChange={modifyFormik.handleChange} value={modifyFormik.values.nickname} placeholder={modifyFormik.initialValues.nickname}/>),
     이메일: (<Typography size={'xs'} color={'gray700'}>{profile.email}</Typography>),
-    비밀번호: (<Button color={'primary'} fontColor={'white'} name={'변경하기'} size={'sm'} type={'button'} onClick={() => alert('password button clicked')}/>),
+    비밀번호: (<Button color={'primary'} fontColor={'white'} name={'변경하기'} size={'sm'} type={'button'} onClick={() => setOpen(true)}/>),
     '프로필 사진': (
       <>
         <Image src={modifyFormik.values.imageUrl} alt={'profile img not found'} size={'md'} />
@@ -88,7 +99,7 @@ const Modify: React.FC<ModifyProps> = ({ profile }) => {
       </Layout.complete>
       <Divider style={{ gridColumn: '1 / span 3' }} />
       <Layout.footer>
-        <Wrapper flexDirection={'column'}>
+        <Wrapper flexDirection={'column'} gap={{ rowGap: 8 }}>
           <Typography size={'md'} color={'darkgray'}>
             회원 탈퇴
           </Typography>
@@ -105,6 +116,7 @@ const Modify: React.FC<ModifyProps> = ({ profile }) => {
           onClick={handleWithDrawal}
         />
       </Layout.footer>
+      <PasswordModal open={open} setOpen={setOpen} />
     </Layout.container>
   );
 };

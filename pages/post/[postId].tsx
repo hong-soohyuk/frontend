@@ -15,19 +15,20 @@ import useReviews from '@components/post/useReviews';
 const Detail: NextPage = () => {
   const router = useRouter();
   const postId = router.query.postId as string;
-  const { postData } = usePost(postId);
+  const { postData, refetch } = usePost(postId);
   const { schedulesData } = useSchedules(postId);
   const { reviewsData } = useReviews(postId);
-
   return (
     <Layout.container>
-      <MeetingInfo post={postData} />
+      <MeetingInfo post={postData} refetch={refetch} />
       <ShowSchedule schedules={schedulesData} />
       <ReviewList reviews={reviewsData} />
-      <StickyBar
-        buttonName={'약속 신청하기'}
-        onClick={() => router.push({ pathname: '/reservation/[postId]', query: { postId } })}
-      />
+      {!postData?.isAuthor && (
+        <StickyBar
+          buttonName={'약속 신청하기'}
+          onClick={() => router.push({ pathname: '/reservation/[postId]', query: { postId } })}
+        />
+      )}
     </Layout.container>
   );
 };

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { validEmail, validPassword } from '@lib/validator';
 import { Field, Form, Formik, FormikErrors, useFormikContext } from 'formik';
 import auth from '@lib/api/auth';
-import Box from '@components/common/Box';
 import Button from '@components/common/Button';
 import Checkbox from '@components/common/Checkbox';
 import Input from '@components/common/Input';
@@ -28,6 +27,7 @@ const SignupForm = () => {
   const { email, password, passwordConfirm, code, allAgree } = values;
   const [emailClicked, setEmailClicked] = useState(false);
   const [emailChecked, setEmailChecked] = useState(false);
+  const [emailConfirmed, setEmailConfirmed] = useState(false);
   const [isReset, setIsReset] = useState(false);
   const router = useRouter();
 
@@ -63,6 +63,7 @@ const SignupForm = () => {
     if (response.status === 200) {
       setEmailChecked(true);
       alert('이메일 인증이 완료되었습니다!');
+      setEmailConfirmed(true);
       console.log('email verified confirmed');
     } else {
       alert('이메일 인증번호가 일치하지 않습니다.');
@@ -95,45 +96,49 @@ const SignupForm = () => {
         {emailClicked && !emailChecked && (
           <Field type={'text'} name={'code'} placeholder={'인증번호를 입력하세요'} component={Input} />
         )}
-        {emailClicked && !emailChecked && (
-          <Timer resetStatus={isReset} isStart={true} limitMin={3} fontColor={'black'} />
-        )}
 
         {emailClicked && !emailChecked && (
-          <Styled.emailbuttonContainer>
-            <Button
-              type={'button'}
-              name={'재전송'}
-              size={'md'}
-              fontColor={'white'}
-              borderColor={'none'}
-              color={email && !errors.email ? 'black' : 'gray200'}
-              onClick={resendEmailClick}
-              style={{ alignSelf: 'flex-start' }}
-            />
-            <Button
-              type={'button'}
-              name={'이메일 보내기'}
-              size={'md'}
-              fontColor={'white'}
-              borderColor={'none'}
-              color={'black'}
-              onClick={handleCheckEmail}
-              style={{ alignSelf: 'flex-end' }}
-            />
-          </Styled.emailbuttonContainer>
+          <Styled.confirmContainer>
+            {emailClicked && !emailChecked && !emailConfirmed && (
+              <span>
+                <Timer resetStatus={isReset} isStart={true} limitMin={3} fontColor={'black'} />
+              </span>
+            )}
+            <Styled.emailbuttonContainer>
+              <Button
+                type={'button'}
+                name={'재전송'}
+                size={'sm'}
+                fontColor={'white'}
+                borderColor={'none'}
+                color={email && !errors.email ? 'black' : 'gray200'}
+                onClick={resendEmailClick}
+                style={{ width: 'fit-content', padding: '1rem' }}
+              />
+              <Button
+                type={'button'}
+                name={'인증 완료하기'}
+                size={'sm'}
+                fontColor={'white'}
+                borderColor={'none'}
+                color={'black'}
+                onClick={handleCheckEmail}
+                style={{ width: 'fit-content', padding: '1rem' }}
+              />
+            </Styled.emailbuttonContainer>
+          </Styled.confirmContainer>
         )}
         {!emailClicked && (
           <Button
             type={'button'}
             name={'이메일 인증'}
-            size={'md'}
+            size={'sm'}
             fontColor={'white'}
             borderColor={'none'}
             color={email && !errors.email ? 'black' : 'gray200'}
             disabled={!(email && !errors.email)}
             onClick={handleSendEmail}
-            style={{ alignSelf: 'flex-end' }}
+            style={{ alignSelf: 'flex-end', width: 'fit-content', padding: '1rem' }}
           />
         )}
 
@@ -208,7 +213,7 @@ const SignupForm = () => {
 
 const SignupModal = () => {
   return (
-    <Box width={450}>
+    <Styled.box>
       <Styled.container>
         <Title size="h1" color={'black'} align="left">
           🌳 간편 가입하기
@@ -252,7 +257,7 @@ const SignupModal = () => {
           <SignupForm />
         </Formik>
       </Styled.container>
-    </Box>
+    </Styled.box>
   );
 };
 

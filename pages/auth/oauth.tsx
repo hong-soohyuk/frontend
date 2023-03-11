@@ -19,7 +19,7 @@ const OAuthRedirect = () => {
   useEffect(() => {
     if (token) {
       storage.setToken(token as string);
-      router.replace('/');
+      location.href = '/';
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query.token]);

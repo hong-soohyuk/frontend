@@ -3,12 +3,17 @@ import theme from '@styles/theme';
 
 export const Styled = {
   container: styled.div`
-    ${theme.responsive.mobile} {
-      width: 180px;
-      height: 250px;
+    width: 95%;
+    ${theme.responsive.pc} {
+      max-width: 230px;
     }
-    width: 235px;
-    height: 300px;
+    ${theme.responsive.tablet} {
+      max-width: 230px;
+    }
+    ${theme.responsive.mobile} {
+      max-width: 180px;
+    }
+    height: 100%;
     display: flex;
     flex-direction: column;
     &:hover {
@@ -16,12 +21,16 @@ export const Styled = {
     }
   `,
   image: styled.div`
+    width: 100%;
+    ${theme.responsive.pc} {
+      height: 200px;
+    }
+    ${theme.responsive.tablet} {
+      height: 200px;
+    }
     ${theme.responsive.mobile} {
-      width: 180px;
       height: 150px;
     }
-    width: 235px;
-    height: 200px;
   `,
   hashRef: styled.div`
     display: flex;

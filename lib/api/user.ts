@@ -1,4 +1,4 @@
-import { ModifyUserProfileRequestDto } from 'types/request';
+import { ModifyUserPasswordRequestDto, ModifyUserProfileRequestDto } from 'types/request';
 import client from './client';
 
 const user = {
@@ -13,8 +13,11 @@ const user = {
   },
   modifyProfile: async (profile: ModifyUserProfileRequestDto) => {
     const url = '/user/profile';
-    console.log('수정할 프로파일', profile);
     return await client.patch(url, profile);
+  },
+  modifyPassword: async (password: ModifyUserPasswordRequestDto) => {
+    const url = '/user/password';
+    return await client.patch(url, password);
   },
 };
 

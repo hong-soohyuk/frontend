@@ -15,7 +15,7 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
   const [mobile, setMobile] = useState<boolean>(false);
-  const handleWindowSizeChange = () => (window.innerWidth < 768 ? setMobile(true) : setMobile(false));
+  const handleWindowSizeChange = () => (window.innerWidth < 1060 ? setMobile(true) : setMobile(false));
 
   useEffect(() => {
     handleWindowSizeChange();
@@ -26,7 +26,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
   return (
     <Styled.container onClick={onClick}>
       <Styled.image>
-        <Image src={post.imageUrl ? post.imageUrl : '/imgs/SamplePost.jpeg'} alt={'post img not found'} size={'lg'} />
+        <Image src={post.imageUrl ? post.imageUrl : '/imgs/default_post.png'} alt={'post img not found'} size={'lg'} />
       </Styled.image>
       <Styled.hashRef>
         {post.hashtags.slice(0, mobile ? 2 : 3).map((hash: string) => (

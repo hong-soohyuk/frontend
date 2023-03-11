@@ -1,3 +1,4 @@
+import { PostEditRequestDto } from './../../types/request';
 import { PostCreateRequestDto } from 'types/request';
 import { SearchStateType } from '@components/search/context';
 import { SortType } from 'types/enum';
@@ -13,7 +14,7 @@ export const post = {
     console.log(post);
     return await client.post(url, post);
   },
-  modifyPost: async (post: any) => {
+  modifyPost: async (post: PostEditRequestDto) => {
     const url = `/post/${post.postId}`;
     return await client.put(url, post);
   },
@@ -26,11 +27,11 @@ export const post = {
     return await client.post(url, formData);
   },
   getSchedules: async (postId: string) => {
-    const url = `post/${postId}/schedules`;
+    const url = `post/schedules/${postId}`;
     return await client.get(url);
   },
   getReviews: async (postId: string) => {
-    const url = `post/${postId}/reviews`;
+    const url = `post/reviews/${postId}`;
     return await client.get(url);
   },
   updateLike: async (postId: string) => {
@@ -43,10 +44,25 @@ export const post = {
   },
   search: async (params: { searchState: SearchStateType; pageParam: number }) => {
     const { searchState, pageParam } = params;
-    const { keyword, sort, region } = searchState;
+    const { hashtag, keyword, sort, region } = searchState;
     const sortValue = SortType[sort as keyof typeof SortType];
-    const url = `/post/search?keyword=${keyword}&page=${pageParam}&filter=${sortValue}&region=${region}`;
+    console.log('keyword', keyword, ' region', region);
+    const url = `/post/search?hashtag=${hashtag}&keyword=${encodeURIComponent(
+      keyword,
+    )}&page=${pageParam}&filter=${sortValue}&region=${encodeURIComponent(region)}`;
     console.log(url);
+    return await client.get(url);
+  },
+  getMyPostList: async () => {
+    const url = `/post/writer`;
+    return await client.get(url);
+  },
+  getLikePostList: async () => {
+    const url = `post/likes`;
+    return await client.get(url);
+  },
+  getSearchHashtags: async () => {
+    const url = `/hashtag`;
     return await client.get(url);
   },
 };
